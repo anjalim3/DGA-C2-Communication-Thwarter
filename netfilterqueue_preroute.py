@@ -58,7 +58,7 @@ def modify(packet):
             if __response is not "NXDOMAIN":
 
                 with connection.cursor() as cursor:
-                    __sql = "select count(*) as prev_nxdomain_resp_count from Process_NXDomain_Tracking where pid = " + __pid + " and is_proc_dead = 0 and  response = 'NXDOMAIN' "
+                    __sql = "select count(*) as prev_nxdomain_resp_count from Process_NXDomain_Tracking where pid = " + str(__pid) + " and is_proc_dead = 0 and  response = 'NXDOMAIN' "
                     cursor.execute(__sql)
                     result = cursor.fetchone()
                     __nxdomian_count = result['prev_nxdomain_resp_count']
