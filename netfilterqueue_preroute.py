@@ -32,17 +32,19 @@ def modify(packet):
 
 
         lines = out.split("\n")
-        print(lines)
+        
+        del lines[0]
         del lines[0]
         for line in list(filter(None, lines)):
             tokens = list(filter(None, line.split(" ")))
+            print tokens
             if tokens[3].split(":")[1] == __dport:
                 __pid = int(tokens[-1].split("/")[0])
                 __procName = tokens[-1].split("/")[1]
                 break
 
 
-        print(str(__pid) + " " + __procName + " " + __response + " " + __dport)
+        print(str(__pid) + " " + str(__procName) + " " + __response + " " + str(__dport))
 
 
         if __pid is not None:
