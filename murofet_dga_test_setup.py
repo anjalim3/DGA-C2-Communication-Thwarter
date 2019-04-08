@@ -1,2 +1,5 @@
 import urllib2
-contents = urllib2.urlopen("http://illinois.edu").read()
+
+with open("murofet_dgas.txt") as file:
+    for __dga_url in file:
+        contents = urllib2.urlopen("http://"+__dga_url).read()
