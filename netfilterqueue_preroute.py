@@ -34,7 +34,7 @@ def modify(packet):
         lines = out.split("\n")
         print(lines)
         del lines[0]
-        for line in lines:
+        for line in list(filter(None, lines)):
             tokens = list(filter(None, line.split(" ")))
             if tokens[3].split(":")[1] == __dport:
                 __pid = int(tokens[-1].split("/")[0])
