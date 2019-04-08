@@ -37,7 +37,7 @@ def modify(packet):
         del lines[0]
         for line in list(filter(None, lines)):
             tokens = list(filter(None, line.split(" ")))
-            print tokens
+            #print tokens
             if tokens[3].split(":")[1] == str(__dport):
                 __pid = int(tokens[6].split("/")[0])
                 __procName = tokens[6].split("/")[1]
@@ -65,7 +65,7 @@ def modify(packet):
                 try:
                     if __nxdomian_count is not None and int(__nxdomian_count) > THRESHOLD:
                         with connection.cursor() as cursor:
-                            __sql = "insert into Process_NXDomain_Tracking (pid,proc_name,response,is_proc_dead) VALUES ("+__pid+", '"+ __procName+ "', '"+__response+"', 0)"
+                            __sql = "insert into Process_NXDomain_Tracking (pid,proc_name,response,is_proc_dead) VALUES ("+str(__pid)+", '"+ __procName+ "', '"+__response+"', 0)"
                             cursor.execute(__sql)
                             connection.commit()
                         os.system("sudo iptables -A INPUT -s " + __response + " -j DROP")
@@ -83,7 +83,7 @@ def modify(packet):
 
             if __response is "NXDOMAIN":
                 with connection.cursor() as cursor:
-                    __sql = "insert into Process_NXDomain_Tracking (pid,proc_name,response,is_proc_dead) VALUES (" + __pid + ", '" + __procName + "', '" + __response + "', 0)"
+                    __sql = "insert into Process_NXDomain_Tracking (pid,proc_name,response,is_proc_dead) VALUES (" + str(__pid) + ", '" + __procName + "', '" + __response + "', 0)"
                     cursor.execute(__sql)
                     connection.commit()
 
