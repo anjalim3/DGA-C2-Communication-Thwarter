@@ -32,6 +32,7 @@ def modify(packet):
 
 
         lines = out.split("\n")
+        print(lines)
         del lines[0]
         for line in lines:
             tokens = list(filter(None, line.split(" ")))

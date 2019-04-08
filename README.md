@@ -14,4 +14,7 @@ Tool to thwart DGA component of malicious process from successfully connecting t
     sudo python netfilterqueue_preroute.py
     ```
 
-3. Run job to periodically find blacklisted IPs.
+3. Mark pids that are dead:
+    ```
+    python kill_dead_pids.py
+    ```
