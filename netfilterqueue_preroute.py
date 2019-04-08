@@ -27,7 +27,7 @@ def modify(packet):
 
         if dns_data.rcode == 3:
             __response = "NXDOMAIN"
-        if dns_data.rcode == 0:
+        if dns_data.rcode == 0 and "DNS Resource Record" in dns_data:
             __response = dns_data["DNS Resource Record"].rdata
 
 
@@ -38,9 +38,9 @@ def modify(packet):
         for line in list(filter(None, lines)):
             tokens = list(filter(None, line.split(" ")))
             print tokens
-            if tokens[3].split(":")[1] == __dport:
-                __pid = int(tokens[-1].split("/")[0])
-                __procName = tokens[-1].split("/")[1]
+            if tokens[3].split(":")[1] == str(__dport):
+                __pid = int(tokens[6].split("/")[0])
+                __procName = tokens[6].split("/")[1]
                 break
 
 
@@ -49,7 +49,7 @@ def modify(packet):
 
         if __pid is not None:
             connection = pymysql.connect(host='localhost',
-                                     user='root',
+                                     user='cs460_test',
                                      password='',
                                      db='CS460',
                                      charset='utf8mb4',
