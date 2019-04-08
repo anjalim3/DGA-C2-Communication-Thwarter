@@ -65,8 +65,8 @@ def modify(packet):
                 try:
                     if __nxdomian_count is not None and int(__nxdomian_count) > THRESHOLD:
                         with connection.cursor() as cursor:
-                            __sql = "insert into Process_NXDomain_Tracking (pid,proc_name,response,is_proc_dead) VALUES (%d, %s, %s, %d)"
-                            cursor.execute(__sql, (__pid, __procName, __response, 0))
+                            __sql = "insert into Process_NXDomain_Tracking (pid,proc_name,response,is_proc_dead) VALUES ("+__pid+", '"+ __procName+ "', '"+__response+"', 0)"
+                            cursor.execute(__sql)
                             connection.commit()
                         os.system("sudo iptables -A INPUT -s " + __response + " -j DROP")
                         pkt = IP(dst=pkt[IP].dst, src=pkt[IP].src, ihl=pkt[IP].ihl, tos=pkt[IP].tos,
@@ -83,8 +83,8 @@ def modify(packet):
 
             if __response is "NXDOMAIN":
                 with connection.cursor() as cursor:
-                    __sql = "insert into Process_NXDomain_Tracking (pid,proc_name,response,is_proc_dead) VALUES (%d, %s, %s, %d)"
-                    cursor.execute(__sql, (__pid, __procName, __response, 0))
+                    __sql = "insert into Process_NXDomain_Tracking (pid,proc_name,response,is_proc_dead) VALUES (" + __pid + ", '" + __procName + "', '" + __response + "', 0)"
+                    cursor.execute(__sql)
                     connection.commit()
 
             connection.close()
