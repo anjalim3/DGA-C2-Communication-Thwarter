@@ -6,7 +6,7 @@ Tool to thwart DGA component of malicious process from successfully connecting t
 1. Route incoming DNS responses to our software:
 
     ```angular2html
-    sudo iptables -I INPUT -p udp —sport 53 -j NFQUEUE --queue-num 1
+    sudo iptables -I INPUT -p udp --sport 53 -j NFQUEUE --queue-num 1
     ```
 
 2. Start our software:

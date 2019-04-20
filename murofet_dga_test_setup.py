@@ -1,6 +1,11 @@
 import urllib2
 import time
 
+
+'''
+Simulates domain generation of Murofet version 1
+
+'''
 with open("murofet_dgas.txt") as file:
     for __dga_url in file:
         try:

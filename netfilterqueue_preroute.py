@@ -5,17 +5,25 @@ from netfilterqueue import NetfilterQueue
 import pymysql
 import os
 
+'''
+
+This code runs in an infinite loop and intercepts all incoming DNS responses.
+
+This is the table we are writing into:
+create table Process_NXDomain_Tracking (id INT AUTO_INCREMENT, pid INT, proc_name VARCHAR(255), response VARCHAR(255), is_proc_dead TINYINT, PRIMARY KEY (id));
+
+
+'''
+
 THRESHOLD = 20
 def modify(packet):
-    pkt = IP(packet.get_payload()) #converts the raw packet to a scapy compatible string
-
-    #modify the packet all you want here
-    
+    pkt = IP(packet.get_payload())
     if pkt is not None:
 
         udp_payload = pkt["IP"]["UDP"]
         dns_data = pkt["DNS"]
 
+        # Use netstat to find which process is listening to which port
         __dport = udp_payload.dport
         p = subprocess.Popen(["netstat", "-unp"], stdout=subprocess.PIPE)
         out = p.stdout.read()
@@ -37,7 +45,7 @@ def modify(packet):
         del lines[0]
         for line in list(filter(None, lines)):
             tokens = list(filter(None, line.split(" ")))
-            #print tokens
+            # Parse through netstat output to find pid of the process who listens to the udp port which is equal to dport of incoming packet
             if tokens[3].split(":")[1] == str(__dport):
                 __pid = int(tokens[6].split("/")[0])
                 __procName = tokens[6].split("/")[1]
@@ -68,7 +76,10 @@ def modify(packet):
                             __sql = "insert into Process_NXDomain_Tracking (pid,proc_name,response,is_proc_dead) VALUES ("+str(__pid)+", '"+ __procName+ "', '"+__response+"', 0)"
                             cursor.execute(__sql)
                             connection.commit()
+                        # Blacklist first IP from successful domain resolution of a suspicious process
                         os.system("sudo iptables -A INPUT -s " + __response + " -j DROP")
+
+                        # Spook the valid DNS response and NXDomain so that suspecious process will never learn the IP in the response
                         pkt = IP(dst=pkt[IP].dst, src=pkt[IP].src, ihl=pkt[IP].ihl, tos=pkt[IP].tos,
                                  version=pkt[IP].version, ttl=pkt[IP].ttl, flags=pkt[IP].flags, frag=pkt[IP].frag) / UDP(
                             dport=pkt[UDP].dport, sport=pkt[UDP].sport) / DNS(id=dns_data.id, qr=dns_data.qr,
